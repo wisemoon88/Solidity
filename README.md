@@ -1,2 +1,2 @@
 # Solidity
-developing skills by creating real life Sol projects
+developing skills by creating real life Sol contracts

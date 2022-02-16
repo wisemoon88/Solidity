@@ -18,8 +18,9 @@ contract SimpleStorage {
     mapping(string => uint256) public nameToFavouriteNumber;
 
     //function is similar to method, executes an action with aruguments provided.  if it changes a state of the blockchain it will require a transaction
-    function store(uint256 _favouriteNumber) public {
+    function store(uint256 _favouriteNumber) public returns (uint256) {
         favouriteNumber = _favouriteNumber;
+        return favouriteNumber;
     }
 
     //view doesnt change the state of the blockchain

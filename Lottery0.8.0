@@ -1,0 +1,58 @@
+//SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Lottery {
+    //defining the address of manager and player array
+    address public manager;
+    address[] public players;
+
+    //constructor for defining manager as the person who first deploys the contract
+    constructor() {
+        manager = msg.sender;
+    }
+
+    //function to enter the lottery with payable ability.  also defining modifier to have min ether and not manager
+    function enter() public payable minEther notManager {
+        players.push(msg.sender);
+    }
+
+    //function random
+    function random() private view returns (uint256) {
+        return
+            uint256(
+                keccak256(
+                    abi.encodePacked(block.timestamp, players, block.difficulty)
+                )
+            );
+    }
+
+    //function pick winner that transfers the funds stored in the contract to the winner and resets the players array
+    function pickWinner() public payable restricted {
+        uint256 index = random() % players.length;
+        payable(players[index]).transfer(address(this).balance);
+        players = new address[](0);
+    }
+
+    //modifier for manager access only
+    modifier restricted() {
+        require(msg.sender == manager);
+        _;
+    }
+
+    //modifier for preventinig less than 0.1 ether threshold
+    modifier minEther() {
+        require(msg.value > .01 ether);
+        _;
+    }
+
+    //modifiier to prevent manager to be a player
+    modifier notManager() {
+        require(msg.sender != manager);
+        _;
+    }
+
+    //functoin to get players
+    function getPlayers() public view returns (address[] memory) {
+        return players;
+    }
+}
